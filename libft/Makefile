@@ -6,53 +6,52 @@
 #    By: ddel-bla <ddel-bla@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/09 17:23:53 by ddel-bla          #+#    #+#              #
-#    Updated: 2023/02/15 16:02:59 by ddel-bla         ###   ########.fr        #
+#    Updated: 2023/09/01 16:15:52 by ddel-bla         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC				=	ft_isalpha.c ft_isdigit.c ft_isalnum.c \
-					ft_isascii.c ft_isprint.c ft_strlen.c \
-					ft_memset.c ft_bzero.c ft_memcpy.c \
-					ft_memmove.c ft_strlcpy.c ft_strlcat.c \
-					ft_toupper.c ft_tolower.c ft_strchr.c \
-					ft_strrchr.c ft_strcmp.c ft_strncmp.c \
-					ft_memchr.c ft_memcmp.c ft_strnstr.c \
-					ft_atoi.c ft_calloc.c ft_strdup.c \
-					ft_substr.c ft_strjoin.c ft_strtrim.c \
-					ft_split.c ft_itoa.c ft_strmapi.c \
-					ft_striteri.c ft_putchar_fd.c ft_putstr_fd.c \
-					ft_putendl_fd.c ft_putnbr_fd.c
+# COLOR DEFINITION #
+GREEN = \033[0;92m
+YELLOW = \033[0;93m
+RESET   := \033[0m
 
-SRCB			=	ft_lstnew.c ft_lstadd_front.c ft_lstsize.c \
-					ft_lstlast.c ft_lstadd_back.c ft_lstdelone.c \
-					ft_lstclear.c ft_lstiter.c ft_lstmap.c
-
+SRC				=	$(wildcard is/*.c mem/*.c put/*.c str/*.c to/*.c)
+SRCB			=	$(wildcard lst/*.c)
 OBJ				=	$(SRC:.c=.o)
-
 OBJB			=	$(SRCB:.c=.o)
-
+DEP				=	$(OBJ:.o=.d)
+DEPB			=	$(OBJB:.o=.d)
+NAME			=	libft.a
 LIB				=	ar rcs
-
+CC				= 	gcc
+CFLAGS			=	-Wall -Wextra -Werror
+DEPFLAGS		=	-MMD
 RM				=	rm -f
 
-CFLAGS			=	-Wall -Wextra -Werror
-
-NAME			=	libft.a
-
+.c.o:
+		@$(CC) $(CFLAGS) $(DEPFLAGS) -c $< -o $(<:.c=.o)
+		@echo "$(YELLOW)Compiling: $< "
+		
 $(NAME):		$(OBJ)
-				$(LIB) $(FLAGS) $(NAME) $(OBJ)
+				@$(LIB) $(NAME) $(OBJ)
+				@echo "$(GREEN)libft - Compiled!$(RESET)"
 
 all:			$(NAME)
 
 bonus:			${OBJ} ${OBJB}
-				$(LIB) ${NAME} ${OBJB}
-
+				@$(LIB) ${NAME} ${OBJB}
+				@echo "$(GREEN)libft - Bonus compiled!$(RESET)"
 clean:			
-				$(RM) $(OBJ) $(OBJB)
+				@$(RM) $(OBJ) $(DEP) $(OBJB) $(DEPB)
+				@echo "$(GREEN)libft - Object files cleaned!$(RESET)"
 
 fclean:			clean
-				$(RM) $(NAME)
+				@$(RM) $(NAME)
+				@echo "$(GREEN)libft - Executable files cleaned!$(RESET)"
 
 re:				fclean all bonus
+				@echo "$(GREEN)libft - Re compiled!$(RESET)"
+
+-include $(DEPS) $(DEP)
 
 .PHONY: all clean fclean re
